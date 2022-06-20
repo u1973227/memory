@@ -22,16 +22,16 @@ class GameScene extends Phaser.Scene {
 		this.cameras.main.setBackgroundColor(0xBFFCFF);
 		
 		//Tractament de les opcions 
-		var json = localStorage.getItem("config") || '{"cards":3,"dificulty":"normal"}';
-		var opcions = JSON.parse(json);
-		var dificultat = opcions.dificulty;
-		var cartes = opcions.cards;
+		var json = localStorage.getItem("config") || '{"cards":2,"dificulty":"hard"}';
+		var options_data = JSON.parse(json);
+		var dificultat = options_data.dificulty;
+		var cartes = options_data.cards;
 		arraycards_joc = arraycards_total.slice(0, cartes*2);
 		
 		//Tractament de variables segons la dificultat
 		var puntuacio_negativa = null;
 		var temps_girades = null;
-		if (dificultat == "facil"){
+		if (dificultat == "easy"){
 			puntuacio_negativa = 5;
 			temps_girades = 2000;
 		}
@@ -39,7 +39,7 @@ class GameScene extends Phaser.Scene {
 			puntuacio_negativa = 10
 			temps_girades = 1000;
 		}
-		else if (dificultat == "dificil"){
+		else if (dificultat == "hard"){
 			puntuacio_negativa = 20;
 			temps_girades = 500;
 		}
