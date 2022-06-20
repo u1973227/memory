@@ -8,41 +8,48 @@ class GameScene extends Phaser.Scene {
     }
 
     preload (){	
-		this.load.image('back', '../resources/back.png');
-		this.load.image('cb', '../resources/cb.png');
-		this.load.image('co', '../resources/co.png');
-		this.load.image('sb', '../resources/sb.png');
-		this.load.image('so', '../resources/so.png');
-		this.load.image('tb', '../resources/tb.png');
-		this.load.image('to', '../resources/to.png');
+		this.load.image('back', '../SPRITES/back.png');
+		this.load.image('cb', '../SPRITES/cb.png');
+		this.load.image('co', '../SPRITES/co.png');
+		this.load.image('sb', '../SPRITES/sb.png');
+		this.load.image('so', '../SPRITES/so.png');
+		this.load.image('tb', '../SPRITES/tb.png');
+		this.load.image('to', '../SPRITES/to.png');
 	}
 	
     create (){	
 		let arraycards_total = ['co', 'co', 'cb', 'cb', 'sb', 'sb', 'so', 'so', 'tb', 'tb', 'to', 'to'];
-        this.cameras.main.setBackgroundColor(burlywood);
+        this.cameras.main.setBackgroundColor(0xdeb887);
 		
 		//Tractament de les opcions 
-		var json = localStorage.getItem("config") || '{"cards":2,"dificulty":"easy", "punts":10}';
+		var json = sessionStorage.getItem("config") || '{"cards":2,"dificulty":"easy", "punts":10}';
 		var options_data = JSON.parse(json);
 		var dificultat = options_data.dificulty;
 		var cartes = options_data.cards;
         var puntuacio_negativa = options_data.punts;
 		var arraycards_joc = arraycards_total.slice(0, cartes*2);
-        this.score = 150
+        this.score = 150;
+        var centre_X = this.cameras.main.centerX;
+        var centre_Y = this.cameras.main.centerY;
+
+
 
 		var temps_girades = null;
 		if (dificultat == "easy"){
 			temps_girades = 2000;
+			puntuacio_negativa = 10
 		}
 		else if (dificultat == "normal"){
 			temps_girades = 1000;
+			puntuacio_negativa = 15;
 		}
 		else if (dificultat == "hard"){
 			temps_girades = 500;
+			puntuacio_negativa = 20;
 		}
 
         //Barreja de les cartes per a que no surtin les parelles una al costat de l'altre
-		arraycards_joc.sort((a,b) => 05 - Math.random())
+		arraycards_joc.sort((a,b) => 0.5 - Math.random())
 
         //Distribucio per columnes i files
 		if (cartes < 5){
@@ -50,14 +57,14 @@ class GameScene extends Phaser.Scene {
 			var files = 2;
 		}
 		else{
-			var columnes = 5;
-			var files = 5;
+			var columnes = cartes;
+			var files = 2;
 		}
 
 		var m = 0;
 		for (let n = 0; n < columnes; n++){
 			for(let k = 0; k < files; k++){
-				this.add.image(n * 125 + this.cameras.main.centerX - (cartes / 2)*100, k * 150 + this.cameras.main.centerY - (cartes * 128)/4, arraycards_joc[m]);
+				this.add.image(n * 125 + centre_X - (cartes / 2)*100, k * 150 + centre_Y - (cartes * 128)/4, arraycards_joc[m]);
 				m += 1;
 			}
 		}
@@ -66,7 +73,7 @@ class GameScene extends Phaser.Scene {
 
 		for (let p = 0; p < columnes; p++){
 			for(let q = 0; q < files; q++){
-				this.cards.create(n * 125 + this.cameras.main.centerX - (cartes / 2)*100, k * 150 + this.cameras.main.centerY - (cartes * 128)/4, 'back');
+				this.cards.create(p * 125 + centre_X - (cartes / 2)*100, q * 150 + centre_Y - (cartes * 128)/4, 'back');
 			}	
 		}
 
@@ -74,7 +81,7 @@ class GameScene extends Phaser.Scene {
         var aux = false
         var level = 0;
 		this.cards.children.iterate((card)=>{
-			card.card_id = arraycards[i];
+			card.card_id = arraycards_joc[i];
 			i++;
 			card.setInteractive();
 			card.on('pointerup', () => {
@@ -88,24 +95,28 @@ class GameScene extends Phaser.Scene {
 						//Les girem per a que les pugui tornar a veure el jugador
 						var destructor = [];
 						let c = 0;
-						for (let i = 0; i < columnes; i++){
-							for(let j = 0; j < files; j++){
-								this.add.image(n * 125 + this.cameras.main.centerX - (cartes / 2)*100, k * 150 + this.cameras.main.centerY - (cartes * 128)/4, arraycards_joc[c]);
-								c += 1;
-								destructor.push(imatge);						
+						for (let a = 0; a < cartes*2; a++){
+							for (let i = 0; i < columnes; i++){
+								for(let j = 0; j < files; j++){
+									let carta_girada = this.add.image(i * 125 + centre_X - (cartes / 2)*100, j * 150 + centre_Y - (cartes * 128)/4, arraycards_joc[c]);
+									destructor.push(carta_girada);		
+									c += 1;				
+								}
 							}
 						}
 						setTimeout(() =>{
-							for (let n = 0; n < cartes*2; n++){
-								fallo[iterador].destroy();
+							for (let nose = 0; nose < cartes*2; nose++){
+								console.log(destructor[nose])
+								destructor[nose].destroy();
 							}
 						},temps_girades);
 						//Tractament de fi de joc
 						if (this.score <= 0){
 							alert("FI DEL JOC");
                             options_data.cards = 2;                 //M'he trobat amb el problema de que no es reiniciaven les variables aixi que les reinicio a mà
-                            options_data.dificulty = "easy"
+                            options_data.dificulty = "easy";
                             options_data.punts = 10;
+                            sessionStorage.setItem("config", JSON.stringify(options_data));
 							loadpage("../");
 						}
 					}
@@ -126,15 +137,18 @@ class GameScene extends Phaser.Scene {
                             if(cartes < 6){
                                 cartes++;
                             }
-                            //Augmentem la quantitat de punts a perdre en la següent ronda
-                            puntuacio_negativa += 5
+
+                            if (dificultat == "hard"){
+                            	puntuacio_negativa += 5;
+                            }
+
                             //Actualitzem les variables de opcions
                             options_data.dificulty = dificultat;
                             options_data.cards = cartes;
                             options_data.punts = puntuacio_negativa
                             sessionStorage.setItem("config", JSON.stringify(options_data));
                             //Actualitzem l'escena per a la següent ronda
-                            this.Scene.restart();
+                            this.scene.restart();
 						}
 					}
 					this.firstClick = null;
