@@ -47,16 +47,30 @@ class GameScene extends Phaser.Scene {
 		//Barreja de les cartes per a que no surtin les parelles una al costat de l'altre
 		arraycards_joc.sort((a,b) => 05 - Math.random())
 
+		//Distribucio per columnes i files
+		if (cartes < 5){
+			var columnes = cartes;
+			var files = 2;
+		}
+		else{
+			var columnes = 5;
+			var files = 5;
+		}
+
 		var m = 0;
-		for (let n = 0; n < cartes * 2; n++){
-			this.add.image(, arraycards[quin]);
-			m += 1;
+		for (let n = 0; n < columnes; n++){
+			for(let k = 0; k < files; k++){
+				this.add.image(n * 125 + this.cameras.main.centerX - (cartes / 2)*100, k * 150 + this.cameras.main.centerY - (cartes * 128)/4, arraycards[m]);
+				m += 1;
+			}
 		}
 
 		this.cards = this.physics.add.staticGroup();
 
-		for (let p = 0; p < cartes * 2; p++){
-			this.cards.create(, 'back');
+		for (let p = 0; p < columnes; p++){
+			for(let q = 0; q < files; q++){
+				this.cards.create(n * 125 + this.cameras.main.centerX - (cartes / 2)*100, k * 150 + this.cameras.main.centerY - (cartes * 128)/4, 'back');
+			}	
 		}
 		
 		let i = 0;
@@ -75,11 +89,14 @@ class GameScene extends Phaser.Scene {
 						//Les girem per a que les pugui tornar a veure el jugador
 						var destructor = [];
 						let c = 0;
-						for(let i = 0; i < cartes*2; i++){
-							let imatge = this.add.image(, arraycards[c]);
-							c++;
-							destructor.push(imatge);						
+						for (let i = 0; i < columnes; i++){
+							for(let j = 0; j < files; j++){
+								this.add.image(n * 125 + this.cameras.main.centerX - (cartes / 2)*100, k * 150 + this.cameras.main.centerY - (cartes * 128)/4, arraycards[c]);
+								c += 1;
+								destructor.push(imatge);						
+							}
 						}
+					
 						setTimeout(() =>{
 							for (let n = 0; n < cartes*2; n++){
 								fallo[iterador].destroy();
