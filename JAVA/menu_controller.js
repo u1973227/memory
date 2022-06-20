@@ -1,11 +1,3 @@
-function start_game(){
-	name = prompt("Nom del jugador");
-	
-	sessionStorage.setItem("username", name);
-	
-	loadpage("./HTML/game.html");
-}
-
 function phaser_game(){
 	loadpage("./HTML/phasergame.html");
 }
