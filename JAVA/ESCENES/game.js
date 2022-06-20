@@ -26,7 +26,7 @@ class GameScene extends Phaser.Scene {
 		var options_data = JSON.parse(json);
 		var dificultat = options_data.dificulty;
 		var cartes = options_data.cards;
-		arraycards_joc = arraycards_total.slice(0, cartes*2);
+		var arraycards_joc = arraycards_total.slice(0, cartes*2);
 		
 		//Tractament de variables segons la dificultat
 		var puntuacio_negativa = null;
