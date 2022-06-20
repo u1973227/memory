@@ -60,7 +60,7 @@ class GameScene extends Phaser.Scene {
 		var m = 0;
 		for (let n = 0; n < columnes; n++){
 			for(let k = 0; k < files; k++){
-				this.add.image(n * 125 + this.cameras.main.centerX - (cartes / 2)*100, k * 150 + this.cameras.main.centerY - (cartes * 128)/4, arraycards[m]);
+				this.add.image(n * 125 + this.cameras.main.centerX - (cartes / 2)*100, k * 150 + this.cameras.main.centerY - (cartes * 128)/4, arraycards_joc[m]);
 				m += 1;
 			}
 		}
@@ -91,7 +91,7 @@ class GameScene extends Phaser.Scene {
 						let c = 0;
 						for (let i = 0; i < columnes; i++){
 							for(let j = 0; j < files; j++){
-								this.add.image(n * 125 + this.cameras.main.centerX - (cartes / 2)*100, k * 150 + this.cameras.main.centerY - (cartes * 128)/4, arraycards[c]);
+								this.add.image(n * 125 + this.cameras.main.centerX - (cartes / 2)*100, k * 150 + this.cameras.main.centerY - (cartes * 128)/4, arraycards_joc[c]);
 								c += 1;
 								destructor.push(imatge);						
 							}
