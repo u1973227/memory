@@ -12,6 +12,7 @@ input[type=number]{
 }
 
 .menu-object{
+	background-color: coral;
 	display:block;
 	margin-left: auto;
 	margin-right: auto;
@@ -35,4 +36,19 @@ button.menu-object:hover:not(:active){
 	font-size: 22px;
 	width: 325px;
 	height: 85px;
+}
+
+body{
+	background-color: burlywood;
+}
+
+canvas{
+	display: block;
+	margin: auto;
+}
+
+.image{
+	display: flex;
+	height: 75 vh;
+	align-items: center;
 }
