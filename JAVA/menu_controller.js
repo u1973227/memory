@@ -11,6 +11,7 @@ function exit (){
 		alert("Sortint del joc de l'" + name);
 	}
 	name = "";
+	loadpage("google.com");
 }
 
 function options(){
