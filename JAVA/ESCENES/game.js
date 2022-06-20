@@ -18,20 +18,46 @@ class GameScene extends Phaser.Scene {
 	}
 	
     create (){	
-		let arraycards = ['co', 'sb', 'co', 'sb'];
+		let arraycards_total = ['co', 'co', 'cb', 'cb', 'sb', 'sb', 'so', 'so', 'tb', 'tb', 'to', 'to'];
 		this.cameras.main.setBackgroundColor(0xBFFCFF);
 		
-		this.add.image(250, 300, arraycards[0]);
-		this.add.image(350, 300, arraycards[1]);
-		this.add.image(450, 300, arraycards[2]);
-		this.add.image(550, 300, arraycards[3]);
+		//Tractament de les opcions 
+		var json = localStorage.getItem("config") || '{"cards":3,"dificulty":"normal"}';
+		var opcions = JSON.parse(json);
+		var dificultat = opcions.dificulty;
+		var cartes = opcions.cards;
+		arraycards_joc = arraycards_total.slice(0, cartes*2);
 		
+		//Tractament de variables segons la dificultat
+		var puntuacio_negativa = null;
+		var temps_girades = null;
+		if (dificultat == "facil"){
+			puntuacio_negativa = 5;
+			temps_girades = 2000;
+		}
+		else if (dificultat == "normal"){
+			puntuacio_negativa = 10
+			temps_girades = 1000;
+		}
+		else if (dificultat == "dificil"){
+			puntuacio_negativa = 20;
+			temps_girades = 500;
+		}
+
+		//Barreja de les cartes per a que no surtin les parelles una al costat de l'altre
+		arraycards_joc.sort((a,b) => 05 - Math.random())
+
+		var m = 0;
+		for (let n = 0; n < cartes * 2; n++){
+			this.add.image(, arraycards[quin]);
+			m += 1;
+		}
+
 		this.cards = this.physics.add.staticGroup();
-		
-		this.cards.create(250, 300, 'back');
-		this.cards.create(350, 300, 'back');
-		this.cards.create(450, 300, 'back');
-		this.cards.create(550, 300, 'back');
+
+		for (let p = 0; p < cartes * 2; p++){
+			this.cards.create(, 'back');
+		}
 		
 		let i = 0;
 		this.cards.children.iterate((card)=>{
@@ -41,19 +67,35 @@ class GameScene extends Phaser.Scene {
 			card.on('pointerup', () => {
 				card.disableBody(true,true);
 				if (this.firstClick){
+					//Si fallem
 					if (this.firstClick.card_id !== card.card_id){
-						this.score -= 20;
+						this.score -= puntuacio_negativa;
 						this.firstClick.enableBody(false, 0, 0, true, true);
 						card.enableBody(false, 0, 0, true, true);
+						//Les girem per a que les pugui tornar a veure el jugador
+						var destructor = [];
+						let c = 0;
+						for(let i = 0; i < cartes*2; i++){
+							let imatge = this.add.image(, arraycards[c]);
+							c++;
+							destructor.push(imatge);						
+						}
+						setTimeout(() =>{
+							for (let n = 0; n < cartes*2; n++){
+								fallo[iterador].destroy();
+							}
+						},temps_girades);
+						//Tractament de fi de joc
 						if (this.score <= 0){
-							alert("Game Over");
+							alert("FI DEL JOC");
 							loadpage("../");
 						}
 					}
+					//Si ho fem bé
 					else{
 						this.correct++;
-						if (this.correct >= 2){
-							alert("You Win with " + this.score + " points.");
+						if (this.correct >= cartes){
+							alert("Has GUANYAT amb " + this.score + " punts.");
 							loadpage("../");
 						}
 					}
@@ -65,6 +107,5 @@ class GameScene extends Phaser.Scene {
 			}, card);
 		});
 	}
-	
 	update (){	}
 }
